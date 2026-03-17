@@ -1,0 +1,69 @@
+# 🔒 Virtual Environment
+venv/
+env/
+ENV/
+.venv/
+
+# 🐍 Python Cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.pyc.*
+
+# 📦 Build / Distribution
+build/
+dist/
+*.egg-info/
+
+# 📄 Logs
+*.log
+
+# 🧪 Testing / Coverage
+.coverage
+htmlcov/
+.pytest_cache/
+
+# 📂 IDE / Editor Files
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+
+# 🖥️ OS Files
+.DS_Store
+Thumbs.db
+
+# 🔐 Environment Variables
+.env
+.env.*
+
+# 🤖 Model Cache (VERY IMPORTANT)
+.cache/
+huggingface/
+hf_cache/
+*.bin
+*.pt
+
+# 🧠 Transformers Cache
+~/.cache/huggingface/
+~/.cache/torch/
+
+# 📊 Streamlit Cache
+.streamlit/
+
+# 📁 Temporary Files
+tmp/
+temp/
+
+# 📝 Jupyter Notebooks
+.ipynb_checkpoints/
+
+# 🔥 Optional: Ignore large data
+data/
+datasets/
+
+# 🚫 Ignore downloaded models (if saved locally)
+models/
