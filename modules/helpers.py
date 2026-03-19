@@ -1,4 +1,3 @@
-# helpers.py - Utility/helper functions for the AI assistant
 
 def combine_contents(contents: list[str], separator: str = "\n\n---\n\n") -> str:
     """

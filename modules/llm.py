@@ -1,8 +1,15 @@
 # llm.py - Generate answers using HuggingFace flan-t5-base (free, local)
 
+# modules/llm.py
+# Generate answers using HuggingFace flan-t5-base (free, runs fully locally)
+#
+# CHANGED in v2:
+#   - generate_answer() now accepts a single pre-built prompt string
+#   - Prompt construction moved to prompt_builder.py
+#   - This module only handles model loading and inference
+
 from transformers import pipeline
 
-# Load the model once at module level (avoids reloading on every call)
 print("[llm] Loading flan-t5-base model (first run may take a moment)...")
 
 _generator = pipeline(
@@ -14,29 +21,26 @@ _generator = pipeline(
 print("[llm] Model loaded successfully.")
 
 
-def generate_answer(query: str, context: str) -> str:
+def generate_answer(prompt: str) -> str:
     """
-    Generate an answer using flan-t5-base given a question and context.
+    Generate an answer from a fully pre-built prompt string.
+
+    CHANGED (v2): Old signature was generate_answer(query, context).
+    Prompt is now assembled externally by prompt_builder.py which includes:
+      - chat history
+      - retrieved chunks from vector DB
+      - structured output instructions (Answer + Key Points format)
 
     Args:
-        query: The user's question
-        context: Combined text scraped from web sources
+        prompt: Complete prompt string from prompt_builder.build_prompt()
 
     Returns:
-        Generated answer string
+        Raw generated text string from the model
     """
-    if not context.strip():
+    if not prompt or not prompt.strip():
         return "I could not find enough information to answer that question."
 
-    # Construct a clear prompt for the model
-    prompt = (
-        f"Answer the following question based on the context below.\n\n"
-        f"Context:\n{context}\n\n"
-        f"Question: {query}\n\n"
-        f"Answer:"
-    )
-
-    # Truncate prompt if too long (flan-t5-base has a 512 token limit)
+    # Safety truncation — flan-t5-base handles ~512 tokens ~ 2000 chars
     prompt = prompt[:2000]
 
     try:
@@ -67,3 +71,21 @@ if __name__ == "__main__":
     print("\nAnswer:\n", response)
     
 '''
+
+if __name__ == "__main__":
+    print("\nTesting LLM...\n")
+
+    test_prompt = """
+    Context:
+    AI is the simulation of human intelligence in machines.
+
+    Question:
+    What is AI?
+
+    Answer:
+    """
+
+    response = generate_answer(test_prompt)
+
+    print("Generated Answer:\n")
+    print(response)

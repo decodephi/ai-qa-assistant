@@ -1,22 +1,31 @@
-# requirements.txt
-# Python 3.12 compatible — all versions verified March 2026
-# Install with: pip install -r requirements.txt
- 
-# ── Web UI ───────────────────────────────────────────────────────────────────
+
 streamlit==1.55.0
  
-# ── Web search ───────────────────────────────────────────────────────────────
+
 duckduckgo-search==7.5.1
  
-# ── Article scraping ─────────────────────────────────────────────────────────
-# NOTE: newspaper3k is abandoned (last release 2020, Python 3.12 broken).
-#       newspaper4k is its actively maintained fork — 100% same API.
+
 newspaper4k==0.9.3.1
 lxml[html_clean]==5.3.1        # Required by newspaper4k on Python 3.12
  
-# ── LLM: HuggingFace Transformers (free, runs fully locally) ─────────────────
+
 transformers==4.57.1           # Latest stable (Mar 2026)
-torch==2.6.0                   # Latest stable, Python 3.12 supported
-                               # For GPU: pip install torch==2.6.0+cu121 --index-url https://download.pytorch.org/whl/cu121
+torch==2.6.0                   # Latest stable, Python 3.12 supporte
+# For GPU: pip install torch==2.6.0+cu121 --index-url https://download.pytorch.org/whl/cu121
 sentencepiece==0.2.0           # Required by flan-t5 tokenizer
 protobuf==5.29.4               # Required by sentencepiece
+
+
+
+#---------------------------------------------------
+
+# generates semantic vectors for chunks + queries
+sentence-transformers==3.3.1 
+
+# ── Vector similarity search (free, by Facebook AI)
+faiss-cpu==1.9.0 
+
+
+
+# ── Core scientific computing (required by FAISS + sentence-transformers) ─────
+numpy==1.26.4 
