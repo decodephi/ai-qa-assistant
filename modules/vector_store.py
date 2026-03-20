@@ -17,7 +17,7 @@ _embedder = SentenceTransformer("all-MiniLM-L6-v2")
 print("[vector_store] Embedding model loaded.")
 
 EMBEDDING_DIM = 384   # output dimension of all-MiniLM-L6-v2
-TOP_K         = 4     # number of top chunks to retrieve per query
+TOP_K = 6    # number of top chunks to retrieve per query
 
 
 class VectorStore:
@@ -34,6 +34,8 @@ class VectorStore:
         self._chunks: list[dict]               = []     # original chunk dicts
 
     def build(self, chunks: list[dict]) -> None:
+        
+        
         """
         Embed all chunks and store them in the FAISS index.
 
@@ -47,6 +49,8 @@ class VectorStore:
             3. Normalise vectors (makes cosine ≈ L2 search)
             4. Build a fresh FAISS flat index and add all vectors
         """
+        
+        
         if not chunks:
             print("[vector_store] No chunks to index.")
             self._index  = None
@@ -73,6 +77,7 @@ class VectorStore:
         print(f"[vector_store] Index built with {self._index.ntotal} vectors.")
 
     def retrieve(self, query: str, top_k: int = TOP_K) -> list[dict]:
+        
         """
         Semantic search: return the top-k most relevant chunks for a query.
 
@@ -84,6 +89,8 @@ class VectorStore:
             List of the top-k chunk dicts (sorted by relevance, best first)
             Returns [] if index is empty.
         """
+        
+        
         if self._index is None or self._index.ntotal == 0:
             print("[vector_store] Index is empty — cannot retrieve.")
             return []
@@ -94,14 +101,21 @@ class VectorStore:
         faiss.normalize_L2(q_vec)
 
         # Search — returns distances and indices of nearest neighbours
-        k       = min(top_k, self._index.ntotal)
+        k = min(top_k, self._index.ntotal)
         _, idxs = self._index.search(q_vec, k)
 
         # Collect matching chunks (filter out FAISS sentinel value -1)
+       # Collect matching chunks
         results = [
             self._chunks[i]
             for i in idxs[0]
-            if i != -1
+                if i != -1 and i < len(self._chunks)
+        ]
+
+
+        results = [
+            c for c in results
+            if len(c["text"]) > 50
         ]
 
         print(f"[vector_store] Retrieved {len(results)} relevant chunks.")

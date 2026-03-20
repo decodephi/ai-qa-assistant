@@ -17,7 +17,7 @@ def get_top_urls(query: str, max_results: int = 3) -> list[dict]:
     results = []
 
     try:
-        with DDGS() as ddgs:
+        with DDGS(headers={"User-Agent": "Mozilla/5.0"}) as ddgs:
             search_results = ddgs.text(query, max_results=max_results)
             for r in search_results:
                 results.append({

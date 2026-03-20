@@ -15,7 +15,7 @@ print("[llm] Loading flan-t5-base model (first run may take a moment)...")
 _generator = pipeline(
     "text2text-generation",
     model="google/flan-t5-base",
-    max_new_tokens=300
+      
 )
 
 print("[llm] Model loaded successfully.")
@@ -42,13 +42,28 @@ def generate_answer(prompt: str) -> str:
 
     # Safety truncation — flan-t5-base handles ~512 tokens ~ 2000 chars
     prompt = prompt[:2000]
+    
+    ''' #For only pass prompt paramenter it will show smae prompt in repetation.
+            #  Now adding same extra paramenter to get strong result
+    '''  
 
     try:
-        result = _generator(prompt)
+        result = _generator(
+            
+            
+            prompt,
+            max_new_tokens = 300,
+            do_sample=True,
+            temperature=0.7,
+            top_p = 0.9,
+            repetition_penalty = 1.2
+            
+            )
         answer = result[0].get("generated_text", "").strip()
+        
         return answer if answer else "The model could not generate a response."
     except Exception as e:
-        print(f"[llm] Error generating answer: {e}")
+        print(f"[llm] Error: {e}")
         return "An error occurred while generating the answer."
     
     

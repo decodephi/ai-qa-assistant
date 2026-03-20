@@ -1,15 +1,7 @@
-# modules/prompt_builder.py
-# Builds the final structured prompt sent to the LLM.
-# Combines: chat history + retrieved context chunks + user query.
-# The prompt is carefully engineered to:
-#   - Prevent hallucination (context-only instruction)
-#   - Request structured output (Answer + Key Points)
-#   - Stay within flan-t5-base's token limit (~512 tokens / ~2000 chars)
 
-# ── Constants ─────────────────────────────────────────────────────────────────
-MAX_CONTEXT_CHARS  = 1200  # max chars from retrieved chunks
-MAX_HISTORY_CHARS  = 400   # max chars from chat history block
-MAX_PROMPT_CHARS   = 1900  # hard cap before sending to LLM
+MAX_CONTEXT_CHARS  = 800  # max chars from retrieved chunks
+MAX_HISTORY_CHARS  = 300   # max chars from chat history block
+MAX_PROMPT_CHARS   = 1600  # hard cap before sending to LLM
 
 
 def build_prompt(
@@ -64,20 +56,33 @@ def build_prompt(
 
     # ── Part 3: Assemble final prompt ─────────────────────────────────────────
     prompt = (
-        f"You are a helpful AI assistant. "
-        f"Answer ONLY using the provided context. "
-        f"Do NOT make up information. "
-        f"Be concise and structured.\n\n"
-        f"{history_section}"
-        f"Context:\n{context_block}\n\n"
-        f"Question: {query}\n\n"
-        f"Respond in this exact format:\n"
-        f"Answer:\n"
-        f"<your answer here>\n\n"
-        f"Key Points:\n"
-        f"- point 1\n"
-        f"- point 2\n"
-        f"- point 3"
+        
+    "You are a helpful AI assistant.\n"
+    "Answer ONLY using the provided context.\n"
+    "Do NOT make up information.\n"
+    "Do NOT repeat the same sentence.\n"
+    "Keep answers natural and human-like.\n\n"
+    
+
+    "Your response MUST follow this structure:\n\n"
+
+    "Answer:\n"
+    "Write a clear and detailed explanation (3–5 sentences).\n\n"
+
+    "Simple Explanation:\n"
+    "Explain in easy words for a beginner.\n\n"
+
+    "Examples:\n"
+    "- Give 2 real-world examples\n\n"
+
+    "Key Points:\n"
+    "- point 1\n"
+    "- point 2\n"
+    "- point 3\n\n"
+
+    f"{history_section}"
+    f"Context:\n{context_block}\n\n"
+    f"Question: {query}\n"
     )
 
     # Hard cap the full prompt (flan-t5-base token limit safety)
@@ -109,6 +114,7 @@ def extract_sources(retrieved_chunks: list[dict], max_sources: int = 3) -> list[
             break
 
     return result
+
 
 # if __name__ == "__main__":
 #     print("Testing prompt_builder...\n")
