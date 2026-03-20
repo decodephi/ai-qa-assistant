@@ -1,10 +1,9 @@
-# modules/vector_store.py
 # Lightweight in-memory vector database using:
 #   - sentence-transformers  → create embeddings (free, runs locally)
 #   - FAISS                  → fast similarity search (free, by Facebook AI)
-#
-# No external database server needed. Everything lives in RAM per session.
-# Each new query clears the old index and rebuilds — simple, stateless design.
+
+
+
 
 import numpy as np
 import faiss
@@ -16,8 +15,8 @@ print("[vector_store] Loading embedding model (all-MiniLM-L6-v2)...")
 _embedder = SentenceTransformer("all-MiniLM-L6-v2")
 print("[vector_store] Embedding model loaded.")
 
-EMBEDDING_DIM = 384   # output dimension of all-MiniLM-L6-v2
-TOP_K = 6    # number of top chunks to retrieve per query
+EMBEDDING_DIM = 384  
+TOP_K = 6   
 
 
 class VectorStore:
@@ -30,8 +29,8 @@ class VectorStore:
     """
 
     def __init__(self):
-        self._index:  faiss.IndexFlatL2 | None = None  # FAISS index
-        self._chunks: list[dict]               = []     # original chunk dicts
+        self._index:  faiss.IndexFlatL2 | None = None  
+        self._chunks: list[dict]= []    
 
     def build(self, chunks: list[dict]) -> None:
         
@@ -131,24 +130,7 @@ class VectorStore:
         return self._index is not None and self._index.ntotal > 0
 
 
-# ── Module-level singleton ─────────────────────────────────────────────────
-# One shared store used across the whole app session.
+
 vector_store = VectorStore()
 
 
-# if __name__ == "__main__":
-#     print("\nTesting VectorStore...\n")
-
-#     sample_chunks = [
-#         {"text": "AI is artificial intelligence", "source": "url1"},
-#         {"text": "Machine learning is a subset of AI", "source": "url2"},
-#         {"text": "Deep learning uses neural networks", "source": "url3"}
-#     ]
-
-#     vector_store.build(sample_chunks)
-
-#     results = vector_store.retrieve("What is AI?")
-
-#     print("\nTop Results:\n")
-#     for r in results:
-#         print(r)

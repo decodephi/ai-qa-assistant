@@ -1,12 +1,7 @@
-# modules/chunker.py
-# Splits long scraped text into small overlapping chunks.
-# Smaller chunks = more precise similarity search in the vector DB.
-# Overlap ensures context is not lost at chunk boundaries.
+CHUNK_SIZE    = 400   
+CHUNK_OVERLAP = 80 
 
-# ── Constants ─────────────────────────────────────────────────────────────────
-CHUNK_SIZE    = 400   # characters per chunk (fits well within flan-t5 limits)
-CHUNK_OVERLAP = 80    # characters shared between consecutive chunks
-
+  
 
 def split_into_chunks(text: str, source_url: str = "") -> list[dict]:
     """

@@ -1,7 +1,7 @@
 
-MAX_CONTEXT_CHARS  = 800  # max chars from retrieved chunks
-MAX_HISTORY_CHARS  = 300   # max chars from chat history block
-MAX_PROMPT_CHARS   = 1600  # hard cap before sending to LLM
+MAX_CONTEXT_CHARS  = 800  
+MAX_HISTORY_CHARS  = 300   
+MAX_PROMPT_CHARS   = 1600  
 
 
 def build_prompt(
@@ -123,24 +123,3 @@ def extract_sources(retrieved_chunks: list[dict], max_sources: int = 5) -> list[
     return result
 
 
-# if __name__ == "__main__":
-#     print("Testing prompt_builder...\n")
-
-#     query = "What is AI?"
-
-#     sample_chunks = [
-#         {"text": "AI stands for Artificial Intelligence.", "source": "https://a.com"},
-#         {"text": "It enables machines to learn and make decisions.", "source": "https://b.com"}
-#     ]
-
-#     history = "User: What is AI?\nAssistant: AI is..."
-
-#     prompt = build_prompt(query, sample_chunks, history)
-
-#     print("Generated Prompt:\n")
-#     print(prompt)
-
-#     sources = extract_sources(sample_chunks)
-
-#     print("\nExtracted Sources:")
-#     print(sources)

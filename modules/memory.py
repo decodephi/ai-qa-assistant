@@ -1,4 +1,4 @@
-# modules/memory.py
+
 # Manages short-term chat history (last N conversations).
 # This is a simple in-process store — no database required.
 # Each conversation turn is stored as {"role": "user"/"assistant", "content": "..."}
@@ -121,21 +121,7 @@ class ChatMemory:
         return len(self._history)
 
 
-# ── Module-level singleton ─────────────────────────────────────────────────
-# One shared memory instance used across the whole app session.
-# Import this object directly in main.py and app.py.
+
 chat_memory = ChatMemory()
 
 
-''' 
-if __name__ == "__main__":
-    print("Testing ChatMemory...\n")
-
-    chat_memory.add_turn("What is AI?", "AI is Artificial Intelligence.")
-    chat_memory.add_turn("Give examples", "Chatbots, self-driving cars.")
-
-    print("Formatted History:\n")
-    print(chat_memory.format_for_prompt())
-
-    print("\nEnhanced Query Test:")
-    print(chat_memory.enhance_query("Give more details")) '''  

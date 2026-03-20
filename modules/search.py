@@ -33,15 +33,4 @@ def get_top_urls(query: str, max_results: int = 3) -> list[dict]:
 #To cheak the result , we are geeting or not 
 
 
-'''
-if __name__ == "__main__":
-    query = input("Enter your search query: ")
-    
-    results = get_top_urls(query)
-
-    print("\nTop Results:\n")
-    for i, r in enumerate(results, 1):
-        print(f"{i}. {r['title']}")
-        print(f"   URL: {r['url']}")
-        print(f"   Snippet: {r['snippet']}\n")
-'''  
+  

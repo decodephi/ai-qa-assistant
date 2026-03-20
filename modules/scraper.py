@@ -1,11 +1,11 @@
 # scraper.py - Extract article content from URLs using newspaper4k
-# newspaper4k is the actively maintained fork of newspaper3k — same API, Python 3.12 compatible
 
-from newspaper import Article   # newspaper4k uses the same import as newspaper3k
+
+from newspaper import Article  
 import re
 
 
-MAX_CHARS = 1500  # Limit content per article to avoid huge LLM inputs
+MAX_CHARS = 1500  
 
 
 def extract_content(url: str) -> str:
@@ -63,20 +63,3 @@ def scrape_multiple(urls: list[str]) -> list[str]:
     return contents
 
 
-'''   
-
-if __name__ == "__main__":
-    test_urls = [
-        "https://en.wikipedia.org/wiki/Artificial_intelligence",
-        "https://www.ibm.com/topics/artificial-intelligence"
-    ]
-
-    print("Scraping content...\n")
-
-    results = scrape_multiple(test_urls)
-
-    for i, content in enumerate(results, 1):
-        print(f"\n--- Article {i} ---\n")
-        print(content[:500])  # show preview only
-        
-''' 

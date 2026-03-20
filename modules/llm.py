@@ -1,13 +1,3 @@
-# llm.py - Generate answers using HuggingFace flan-t5-base (free, local)
-
-# modules/llm.py
-# Generate answers using HuggingFace flan-t5-base (free, runs fully locally)
-#
-# CHANGED in v2:
-#   - generate_answer() now accepts a single pre-built prompt string
-#   - Prompt construction moved to prompt_builder.py
-#   - This module only handles model loading and inference
-
 from transformers import pipeline
 
 print("[llm] Loading flan-t5-base model (first run may take a moment)...")
