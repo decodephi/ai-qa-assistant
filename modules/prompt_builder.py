@@ -38,14 +38,18 @@ def build_prompt(
     # ── Part 1: Context from vector DB ────────────────────────────────────────
     if retrieved_chunks:
         # Join chunks, separated by markers so LLM can follow the structure
+        
+        
         raw_context = "\n\n".join(
-            f"[Source: {c.get('source', 'unknown')}]\n{c['text']}"
-            for c in retrieved_chunks
+            f"[Source {i+1}: {c.get('source')}]\n{c['text']}"
+            for i, c in enumerate(retrieved_chunks)
         )
         # Trim to limit
         context_block = raw_context[:MAX_CONTEXT_CHARS]
     else:
         context_block = "No relevant content was found."
+        
+        
 
     # ── Part 2: Chat history block ────────────────────────────────────────────
     if chat_history_text and chat_history_text.strip():
@@ -67,10 +71,13 @@ def build_prompt(
     "Your response MUST follow this structure:\n\n"
 
     "Answer:\n"
+    "While answering, refer to sources like (Source 1), (Source 2).\n"
     "Write a clear and detailed explanation (3–5 sentences).\n\n"
 
     "Simple Explanation:\n"
-    "Explain in easy words for a beginner.\n\n"
+    "While answering, refer to sources like (Source 1), (Source 2).\n"
+    "Explain in easy words for a beginner to advance, thihk we make them understand.\n\n"
+    
 
     "Examples:\n"
     "- Give 2 real-world examples\n\n"
@@ -91,9 +98,9 @@ def build_prompt(
     return prompt
 
 
-def extract_sources(retrieved_chunks: list[dict], max_sources: int = 3) -> list[str]:
+def extract_sources(retrieved_chunks: list[dict], max_sources: int = 5) -> list[str]:
     """
-    Extract unique source URLs from retrieved chunks (deduplicated, top 3).
+    Extract unique source URLs from retrieved chunks (deduplicated, top 5).
 
     Args:
         retrieved_chunks: Chunks returned by vector_store.retrieve()

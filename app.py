@@ -162,7 +162,7 @@ with col2:
 # ── Process query ─────────────────────────────────────────────────────────────
 if send:
     if not query or not query.strip():
-        st.warning("⚠️ Please type a question first.")
+        st.warning("Please type a question first.")
     else:
         # Add user bubble immediately
         st.session_state.messages.append({"role": "user", "content": query})

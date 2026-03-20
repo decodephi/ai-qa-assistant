@@ -50,7 +50,6 @@ def generate_answer(prompt: str) -> str:
     try:
         result = _generator(
             
-            
             prompt,
             max_new_tokens = 300,
             do_sample=True,
@@ -68,39 +67,4 @@ def generate_answer(prompt: str) -> str:
     
     
     
-'''     
-if __name__ == "__main__":
-    test_query = "What is Artificial Intelligence?"
-
-    test_context = """
-    Artificial intelligence (AI) is the simulation of human intelligence in machines.
-    It enables machines to learn, reason, and make decisions.
-    AI is widely used in healthcare, finance, and automation.
-    """
-
-    print("\n[llm] Running test...\n")
-
-    response = generate_answer(test_query, test_context)
-
-    print("Question:", test_query)
-    print("\nAnswer:\n", response)
-    
-'''
-
-if __name__ == "__main__":
-    print("\nTesting LLM...\n")
-
-    test_prompt = """
-    Context:
-    AI is the simulation of human intelligence in machines.
-
-    Question:
-    What is AI?
-
-    Answer:
-    """
-
-    response = generate_answer(test_prompt)
-
-    print("Generated Answer:\n")
-    print(response)
+  

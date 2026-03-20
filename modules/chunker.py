@@ -86,17 +86,3 @@ def chunk_multiple(contents: list[str], urls: list[str]) -> list[dict]:
     print(f"[chunker] Total chunks created: {len(all_chunks)}")
     return all_chunks
 
-'''    
-if __name__ == "__main__":
-    sample_text = "Artificial Intelligence is transforming industries. " * 20
-
-    contents = [sample_text]
-    urls = ["https://example.com/ai"]
-
-    chunks = chunk_multiple(contents, urls)
-
-    print("\nSample Output (first 2 chunks):\n")
-    for c in chunks[:2]:
-        print(c)
-        
-'''
