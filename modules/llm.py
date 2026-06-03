@@ -1,3 +1,5 @@
+# LLM module using Hugging Face Transformers
+
 from transformers import pipeline
 
 print("[llm] Loading flan-t5-base model (first run may take a moment)...")

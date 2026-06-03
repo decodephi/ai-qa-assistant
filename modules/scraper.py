@@ -22,6 +22,7 @@ def extract_content(url: str) -> str:
         print(f"[scraper] Invalid URL skipped: {url}")
         return ""
 
+
     try:
         article = Article(url)
         article.download()
@@ -43,6 +44,8 @@ def extract_content(url: str) -> str:
     except Exception as e:
         print(f"[scraper] Failed to extract from {url}: {e}")
         return ""
+
+
 
 
 def scrape_multiple(urls: list[str]) -> list[str]:

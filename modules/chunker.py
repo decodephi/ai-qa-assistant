@@ -1,3 +1,5 @@
+# chunker.py
+
 CHUNK_SIZE    = 400   
 CHUNK_OVERLAP = 80 
 
