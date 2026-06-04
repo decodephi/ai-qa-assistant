@@ -47,35 +47,7 @@ This pattern is called **RAG — Retrieval-Augmented Generation**.
 | Frontend | HTML + CSS + Vanilla JS |
 | Memory | In-process deque (last 6 turns) |
 
----
 
-## Project Structure
-
-```
-rag-web-assistant/
-├── run.py                  # Start the server
-├── .env                    # Your GROQ_API_KEY (never committed)
-├── requirements.txt
-├── backend/
-│   ├── api.py              # FastAPI routes
-│   ├── pipeline.py         # RAG orchestrator
-│   └── modules/
-│       ├── search.py       # Web search with fallback
-│       ├── scraper.py      # Content extraction
-│       ├── chunker.py      # Text splitting
-│       ├── vector_store.py # FAISS index
-│       ├── memory.py       # Conversation memory
-│       ├── prompt_builder.py
-│       ├── llm.py          # Groq + local fallback
-│       └── helpers.py
-└── frontend/
-    ├── index.html
-    ├── css/style.css
-    └── js/
-        ├── app.js
-        ├── api.js
-        └── ui.js
-```
 
 ---
 
@@ -107,9 +79,6 @@ Create a `.env` file in the root:
 GROQ_API_KEY=your_key_here
 ```
 
-Get a free key at [console.groq.com](https://console.groq.com).
-
-> If no key is provided, it falls back to the local `flan-t5-large` model.
 
 **5. Run**
 ```bash
@@ -118,17 +87,7 @@ python run.py
 
 Open [http://localhost:8000](http://localhost:8000)
 
----
-
-## API
-
-| Method | Endpoint | Description |
-|---|---|---|
-| POST | `/api/ask` | Send a question, get an answer |
-| POST | `/api/clear` | Clear conversation memory |
-| GET | `/api/history` | View chat history |
-| GET | `/api/status` | Check active LLM backend |
-| GET | `/docs` | Swagger UI |
+I built this application through `Vibe Coding`. If you feel there is a need for light to make it perfect, you can do it 🤗. @decodephi
 
 ---
 
