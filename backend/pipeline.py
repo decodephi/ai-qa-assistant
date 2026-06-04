@@ -96,7 +96,7 @@ def get_answer(query: str) -> dict:
     logger.info("[pipeline] Query: %r  Enhanced: %r", query, enhanced_query)
 
     # ── Step 4: Web search ─────────────────────────────────────────────────────
-    search_results = get_top_urls(enhanced_query, max_results=5)
+    search_results = get_top_urls(enhanced_query, max_results=3)
 
     if not search_results:
         logger.warning("[pipeline] No search results found.")
@@ -142,9 +142,9 @@ def get_answer(query: str) -> dict:
     vector_store.build(chunks)
 
     # ── Step 8: Retrieve relevant chunks ──────────────────────────────────────
-    retrieved = vector_store.retrieve(enhanced_query, top_k=6)
+    retrieved = vector_store.retrieve(enhanced_query, top_k=4)
     if not retrieved:
-        retrieved = chunks[:6]
+        retrieved = chunks[:4]
         logger.warning("[pipeline] Vector retrieval empty — using first chunks.")
 
     # ── Step 9: Build prompt ───────────────────────────────────────────────────

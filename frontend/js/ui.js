@@ -1,111 +1,89 @@
 // frontend/js/ui.js
-// DOM rendering helpers — pure functions that build HTML and update the DOM.
+// DOM rendering helpers — clean, minimal, no emoji clutter.
 
-/** Format time as HH:MM */
 function formatTime() {
   return new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 }
 
-/** Escape HTML to prevent XSS */
 function escapeHtml(str) {
-  const div = document.createElement('div');
-  div.textContent = str;
-  return div.innerHTML;
+  const d = document.createElement('div');
+  d.textContent = str;
+  return d.innerHTML;
 }
 
-/** Auto-grow textarea */
-export function autoGrow(textarea) {
-  textarea.style.height = 'auto';
-  textarea.style.height = Math.min(textarea.scrollHeight, 140) + 'px';
+export function autoGrow(el) {
+  el.style.height = 'auto';
+  el.style.height = Math.min(el.scrollHeight, 120) + 'px';
 }
 
-/** Scroll chat to the bottom */
-export function scrollToBottom(container) {
-  requestAnimationFrame(() => {
-    container.scrollTop = container.scrollHeight;
-  });
+export function scrollToBottom(el) {
+  requestAnimationFrame(() => { el.scrollTop = el.scrollHeight; });
 }
 
-/** Render a user message bubble */
 export function renderUserMessage(container, text) {
-  const html = `
-    <div class="message user" id="msg-${Date.now()}">
-      <div class="avatar user-avatar">🙋</div>
+  container.insertAdjacentHTML('beforeend', `
+    <div class="message user">
+      <div class="avatar">you</div>
       <div class="bubble-wrapper">
         <div class="bubble user-bubble">${escapeHtml(text)}</div>
         <div class="message-time">${formatTime()}</div>
       </div>
     </div>
-  `;
-  container.insertAdjacentHTML('beforeend', html);
+  `);
   scrollToBottom(container);
 }
 
-/** Render the typing indicator; returns the element so it can be removed */
 export function renderTypingIndicator(container) {
   const el = document.createElement('div');
   el.className = 'typing-indicator';
   el.id = 'typing-indicator';
   el.innerHTML = `
-    <div class="avatar bot-avatar">🤖</div>
-    <div class="typing-dots">
-      <span></span><span></span><span></span>
-    </div>
-    <span class="typing-label">Searching & thinking…</span>
+    <div class="avatar">ai</div>
+    <div class="typing-dots"><span></span><span></span><span></span></div>
+    <span class="typing-label">searching...</span>
   `;
   container.appendChild(el);
   scrollToBottom(container);
   return el;
 }
 
-/** Remove the typing indicator */
 export function removeTypingIndicator() {
   document.getElementById('typing-indicator')?.remove();
 }
 
-/** Render a bot response with key points and sources */
 export function renderBotMessage(container, { answer, key_points = [], sources = [], backend = '' }) {
-  // Key points section
+  // Key points
   let kpHtml = '';
   if (key_points.length > 0) {
-    const items = key_points
-      .map(kp => `<li>${escapeHtml(kp)}</li>`)
-      .join('');
     kpHtml = `
       <div class="key-points">
-        <div class="kp-label">📌 Key Points</div>
-        <ul class="kp-list">${items}</ul>
-      </div>
-    `;
+        <div class="kp-label">Key points</div>
+        <ul class="kp-list">
+          ${key_points.map(kp => `<li>${escapeHtml(kp)}</li>`).join('')}
+        </ul>
+      </div>`;
   }
 
-  // Sources section
+  // Sources
   let srcHtml = '';
-  if (sources.length > 0) {
-    const cards = sources
-      .filter(s => s.url)
-      .map(s => `
-        <a href="${s.url}" target="_blank" rel="noopener noreferrer" class="source-card">
-          <span class="source-icon">↗</span>
-          <span class="source-title">${escapeHtml(s.title || s.url)}</span>
-        </a>
-      `).join('');
+  if (sources.filter(s => s.url).length > 0) {
     srcHtml = `
       <div class="sources">
-        <div class="sources-label">🔗 Sources</div>
-        ${cards}
-      </div>
-    `;
+        <div class="sources-label">Sources</div>
+        ${sources.filter(s => s.url).map(s => `
+          <a href="${s.url}" target="_blank" rel="noopener" class="source-card">
+            <span class="source-icon">↗</span>
+            <span class="source-title">${escapeHtml(s.title || s.url)}</span>
+          </a>`).join('')}
+      </div>`;
   }
 
-  // Backend badge (subtle)
   const backendNote = backend
-    ? `<div class="message-time" style="margin-top:8px">via ${escapeHtml(backend)}</div>`
-    : '';
+    ? `<div class="message-time" style="margin-top:6px">${escapeHtml(backend)}</div>` : '';
 
-  const html = `
-    <div class="message bot" id="msg-${Date.now()}">
-      <div class="avatar bot-avatar">🤖</div>
+  container.insertAdjacentHTML('beforeend', `
+    <div class="message bot">
+      <div class="avatar">ai</div>
       <div class="bubble-wrapper">
         <div class="bubble bot-bubble">${formatAnswer(answer)}</div>
         ${kpHtml}
@@ -114,36 +92,35 @@ export function renderBotMessage(container, { answer, key_points = [], sources =
         <div class="message-time">${formatTime()}</div>
       </div>
     </div>
-  `;
-  container.insertAdjacentHTML('beforeend', html);
+  `);
   scrollToBottom(container);
 }
 
-/** Convert newlines to <br> and handle basic markdown-like bold */
 function formatAnswer(text) {
   if (!text) return 'No answer generated.';
   return escapeHtml(text)
-    .replace(/\n\n/g, '</p><p>')
+    .replace(/\n\n/g, '</p><p style="margin-top:8px">')
     .replace(/\n/g, '<br>')
     .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
-    .replace(/\*(.+?)\*/g, '<em>$1</em>')
-    .replace(/`(.+?)`/g, '<code style="font-family:monospace;background:rgba(255,255,255,0.08);padding:1px 5px;border-radius:4px">$1</code>');
+    .replace(/`(.+?)`/g, '<code style="font-family:monospace;font-size:0.85em;background:#f0f0f0;padding:1px 5px;border-radius:3px;border:1px solid #ddd">$1</code>');
 }
 
-/** Update the backend label in the header */
 export function updateBackendBadge(backend) {
-  const badge = document.getElementById('backend-label');
-  if (badge && backend) badge.textContent = backend;
+  const el = document.getElementById('backend-label');
+  const dot = document.getElementById('status-dot');
+  if (el && backend) {
+    el.textContent = backend;
+    if (dot) dot.classList.add('active');
+  }
 }
 
-/** Update the sidebar history panel */
 export function renderSidebarHistory(history) {
   const container = document.getElementById('sidebar-history');
   const countEl   = document.getElementById('history-count');
   if (!container) return;
 
   if (!history || history.length === 0) {
-    container.innerHTML = `<div style="color:var(--text-muted);font-size:0.8rem;padding:8px">No history yet.</div>`;
+    container.innerHTML = `<div style="color:var(--gray-400);font-size:0.78rem;padding:8px">No history yet.</div>`;
     if (countEl) countEl.textContent = '0 turns';
     return;
   }
@@ -151,29 +128,21 @@ export function renderSidebarHistory(history) {
   const turns = Math.floor(history.length / 2);
   if (countEl) countEl.textContent = `${turns} turn${turns !== 1 ? 's' : ''}`;
 
-  container.innerHTML = history.map(entry => `
+  container.innerHTML = history.map(e => `
     <div class="history-item">
-      <div class="history-item-role ${entry.role}">${entry.role === 'user' ? '🙋 You' : '🤖 Bot'}</div>
-      <div class="history-item-text">${escapeHtml(entry.content)}</div>
-    </div>
-  `).join('');
+      <div class="history-item-role ${e.role}">${e.role === 'user' ? 'you' : 'ai'}</div>
+      <div class="history-item-text">${escapeHtml(e.content)}</div>
+    </div>`).join('');
 }
 
-/** Show a toast message */
-export function showToast(message, durationMs = 3500) {
-  let toast = document.getElementById('toast');
-  if (!toast) {
-    toast = document.createElement('div');
-    toast.id = 'toast';
-    toast.className = 'toast';
-    document.body.appendChild(toast);
-  }
-  toast.textContent = message;
-  toast.classList.add('show');
-  setTimeout(() => toast.classList.remove('show'), durationMs);
+export function showToast(msg, ms = 3000) {
+  let t = document.getElementById('toast');
+  if (!t) { t = document.createElement('div'); t.id = 'toast'; t.className = 'toast'; document.body.appendChild(t); }
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), ms);
 }
 
-/** Hide the welcome screen */
 export function hideWelcome() {
   document.getElementById('welcome')?.classList.add('hidden');
 }

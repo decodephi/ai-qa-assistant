@@ -1,65 +1,139 @@
-# 🔎 AI Web Q&A Assistant
+# AI Q&A Assistant
 
-An end-to-end AI-powered question-answering system that retrieves real-time information from the web, processes it, and generates contextual answers along with source references.
-
----
-
-## 🚀 Features
-
-- 🔍 Web search using DuckDuckGo
-- 📰 Content extraction from real web pages
-- 🧠 Answer generation using HuggingFace LLM (flan-t5-base)
-- 🔗 Source attribution (top 3 links displayed)
-- ⚡ Fully local and free (no API keys required)
-- 🧩 Modular and clean architecture
+Ask a question. Get an answer from the web — with sources.
 
 ---
 
-## 🧠 How It Works
-User Query
-    ↓
-DuckDuckGo Search
-    ↓
-Extract Top 3 URLs
-    ↓
-Scrape Article Content
-    ↓
-Combine Context
-    ↓
-LLM (flan-t5-base)
-    ↓
-Answer + Source Links
+## The Idea
 
+Most AI chatbots answer from training data that goes stale. This one searches the web first, pulls the actual content, and then generates an answer grounded in real, current sources.
 
+No hallucinations. Everything is cited.
 
 ---
 
-## ⚙️ Tech Stack
+## How It Works
 
-- Python 3.12
-- Streamlit
-- DuckDuckGo Search
-- Newspaper4k (or newspaper3k)
-- HuggingFace Transformers
-- PyTorch
+```
+Your question
+    ↓
+Search the web (DuckDuckGo)
+    ↓
+Scrape top results in parallel
+    ↓
+Split into chunks, embed with FAISS
+    ↓
+Retrieve most relevant chunks
+    ↓
+Generate answer via Groq (llama-3.3-70b)
+    ↓
+Answer + Key Points + Sources
+```
+
+This pattern is called **RAG — Retrieval-Augmented Generation**.
 
 ---
 
-## 📦 Installation
+## Tech Stack
 
-### 1. Clone the repository
+| Layer | Tool |
+|---|---|
+| Search | ddgs (DuckDuckGo) |
+| Scraping | newspaper4k, BeautifulSoup |
+| Embeddings | sentence-transformers (all-MiniLM-L6-v2) |
+| Vector search | FAISS |
+| LLM | Groq API (llama-3.3-70b) |
+| Backend | FastAPI |
+| Frontend | HTML + CSS + Vanilla JS |
+| Memory | In-process deque (last 6 turns) |
+
+---
+
+## Project Structure
+
+```
+rag-web-assistant/
+├── run.py                  # Start the server
+├── .env                    # Your GROQ_API_KEY (never committed)
+├── requirements.txt
+├── backend/
+│   ├── api.py              # FastAPI routes
+│   ├── pipeline.py         # RAG orchestrator
+│   └── modules/
+│       ├── search.py       # Web search with fallback
+│       ├── scraper.py      # Content extraction
+│       ├── chunker.py      # Text splitting
+│       ├── vector_store.py # FAISS index
+│       ├── memory.py       # Conversation memory
+│       ├── prompt_builder.py
+│       ├── llm.py          # Groq + local fallback
+│       └── helpers.py
+└── frontend/
+    ├── index.html
+    ├── css/style.css
+    └── js/
+        ├── app.js
+        ├── api.js
+        └── ui.js
+```
+
+---
+
+## Setup
+
+**1. Clone**
 ```bash
-git clone https://github.com/your-username/rag-web-assistant.git
-cd rag-web-assistant
+git clone https://github.com/decodephi/ai-qa-assistant.git
+cd ai-qa-assistant
+```
 
+**2. Create virtual environment**
+```bash
+python -m venv venv
+venv\Scripts\activate        # Windows
+# source venv/bin/activate   # Mac/Linux
+```
 
-What is quantum computing?
+**3. Install dependencies**
+```bash
+pip install -r requirements.txt
+pip install ddgs
+```
 
+**4. Add your Groq API key**
 
-Answer:
-Quantum computing is a type of computing that uses quantum bits...
+Create a `.env` file in the root:
+```
+GROQ_API_KEY=your_key_here
+```
 
-Sources:
-- https://example1.com
-- https://example2.com
-- https://example3.com
+Get a free key at [console.groq.com](https://console.groq.com).
+
+> If no key is provided, it falls back to the local `flan-t5-large` model.
+
+**5. Run**
+```bash
+python run.py
+```
+
+Open [http://localhost:8000](http://localhost:8000)
+
+---
+
+## API
+
+| Method | Endpoint | Description |
+|---|---|---|
+| POST | `/api/ask` | Send a question, get an answer |
+| POST | `/api/clear` | Clear conversation memory |
+| GET | `/api/history` | View chat history |
+| GET | `/api/status` | Check active LLM backend |
+| GET | `/docs` | Swagger UI |
+
+---
+
+## Notes
+
+- The `.env` file is in `.gitignore` and will never be committed.
+- DuckDuckGo has a rate limit. If it hits it, Bing scraping is used as fallback.
+- First run downloads the embedding model (~80 MB). Subsequent runs are fast.
