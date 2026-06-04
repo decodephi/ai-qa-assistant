@@ -88,11 +88,4 @@ python run.py
 Open [http://localhost:8000](http://localhost:8000)
 
 I built this application through `Vibe Coding`. If you feel there is a need for light to make it perfect, you can do it 🤗. @decodephi
-
----
-
-## Notes
-
-- The `.env` file is in `.gitignore` and will never be committed.
-- DuckDuckGo has a rate limit. If it hits it, Bing scraping is used as fallback.
-- First run downloads the embedding model (~80 MB). Subsequent runs are fast.
+  ---------------------------------------------------------------------------------------------------------------------------------
