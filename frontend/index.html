@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="RAG Web Assistant — Ask anything. Powered by Groq LLaMA + DuckDuckGo search + FAISS vector retrieval." />
+  <meta name="theme-color" content="#070b14" />
+  <title>RAG Web Assistant</title>
+
+  <!-- Preconnect for Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+
+  <!-- Stylesheet -->
+  <link rel="stylesheet" href="/static/css/style.css" />
+
+  <!-- Favicon (inline SVG) -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🤖</text></svg>" />
+</head>
+
+<body>
+
+<!-- ═══════════════════════════════════════════════════════════
+     APP SHELL
+══════════════════════════════════════════════════════════════ -->
+<div class="app-shell">
+
+  <!-- ── Header ──────────────────────────────────────────── -->
+  <header class="header">
+    <div class="header-brand">
+      <div class="brand-icon">🤖</div>
+      <div>
+        <div class="brand-title">RAG Web Assistant</div>
+        <div class="brand-subtitle">Search · Retrieve · Answer</div>
+      </div>
+    </div>
+
+    <div class="header-meta">
+      <div class="backend-badge" id="backend-badge">
+        <span class="dot"></span>
+        <span id="backend-label">Connecting…</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- ── Sidebar ──────────────────────────────────────────── -->
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <div class="sidebar-title">🧠 Memory</div>
+      <div class="sidebar-count" id="history-count">0 turns</div>
+    </div>
+
+    <div class="sidebar-history" id="sidebar-history">
+      <div style="color:var(--text-muted);font-size:0.8rem;padding:8px">
+        No history yet.
+      </div>
+    </div>
+
+    <div class="sidebar-footer">
+      <button class="btn-clear" id="clear-btn" aria-label="Clear conversation">
+        🗑️ Clear Conversation
+      </button>
+    </div>
+  </aside>
+
+  <!-- ── Main Chat Area ───────────────────────────────────── -->
+  <main class="chat-area">
+
+    <!-- Messages -->
+    <div class="chat-messages" id="chat-messages" role="log" aria-live="polite" aria-label="Conversation">
+
+      <!-- Welcome screen (hidden once first message sent) -->
+      <div class="welcome" id="welcome">
+        <div class="welcome-icon">🔍</div>
+        <h1 style="font-size:1.6rem;font-weight:700;letter-spacing:-0.03em;background:var(--accent-grd);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">
+          Ask me anything
+        </h1>
+        <p>I search the web in real-time, retrieve the most relevant content, and generate precise answers with sources.</p>
+
+        <div class="suggestion-chips" role="list">
+          <div class="chip" role="listitem" tabindex="0">Who is Sundar Pichai?</div>
+          <div class="chip" role="listitem" tabindex="0">What is quantum computing?</div>
+          <div class="chip" role="listitem" tabindex="0">Latest AI breakthroughs 2025</div>
+          <div class="chip" role="listitem" tabindex="0">How does RAG work?</div>
+          <div class="chip" role="listitem" tabindex="0">Python vs JavaScript 2025</div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Input area -->
+    <div class="input-area">
+      <div class="input-wrapper">
+        <textarea
+          id="chat-input"
+          class="chat-input"
+          placeholder="Ask a question… (Shift+Enter for newline)"
+          rows="1"
+          aria-label="Chat input"
+          autocomplete="off"
+          spellcheck="true"
+        ></textarea>
+        <button class="btn-send" id="send-btn" aria-label="Send message" title="Send (Enter)">
+          ➤
+        </button>
+      </div>
+      <div class="input-hint">
+        Press <strong>Enter</strong> to send &nbsp;·&nbsp; <strong>Shift+Enter</strong> for a new line
+      </div>
+    </div>
+
+  </main>
+
+</div><!-- /app-shell -->
+
+<!-- Toast notification -->
+<div class="toast" id="toast"></div>
+
+<!-- JS Modules -->
+<script type="module" src="/static/js/app.js"></script>
+
+</body>
+</html>

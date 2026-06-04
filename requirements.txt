@@ -1,32 +1,29 @@
+# ── Web Framework ──────────────────────────────────────────────────────────────
+fastapi==0.115.12
+uvicorn[standard]==0.34.3
+python-multipart==0.0.20
 
-streamlit==1.55.0
- 
+# ── Environment / Config ───────────────────────────────────────────────────────
+python-dotenv==1.1.0
 
-duckduckgo-search==7.5.1
- 
+# ── Search ─────────────────────────────────────────────────────────────────────
+ddgs>=8.0.0                    # successor to duckduckgo-search
 
+# ── Web Scraping ───────────────────────────────────────────────────────────────
 newspaper4k==0.9.3.1
-lxml[html_clean]==5.3.1        # Required by newspaper4k on Python 3.12
- 
+lxml[html_clean]==5.3.1       # Required by newspaper4k on Python 3.12
+beautifulsoup4==4.13.4
+requests==2.32.3
 
-transformers==4.57.1           # Latest stable (Mar 2026)
-torch==2.6.0                   # Latest stable, Python 3.12 supporte
-# For GPU: pip install torch==2.6.0+cu121 --index-url https://download.pytorch.org/whl/cu121
-sentencepiece==0.2.0           # Required by flan-t5 tokenizer
-protobuf==5.29.4               # Required by sentencepiece
+# ── LLM (local fallback) ───────────────────────────────────────────────────────
+transformers==4.57.1
+torch==2.6.0
+sentencepiece==0.2.0          # Required by flan-t5 tokenizer
+protobuf==5.29.4
 
+# ── Embeddings + Vector Search ─────────────────────────────────────────────────
+sentence-transformers==3.3.1
+faiss-cpu==1.9.0
 
-
-#---------------------------------------------------
-
-# generates semantic vectors for chunks + queries
-sentence-transformers==3.3.1 
-
-# ── Vector similarity search (free, by Facebook AI)
-faiss-cpu==1.9.0 
-
-beautifulsoup4 
-requests
-
-# ── Core scientific computing (required by FAISS + sentence-transformers) ─────
-numpy==1.26.4 
+# ── Numerical computing ────────────────────────────────────────────────────────
+numpy==1.26.4
