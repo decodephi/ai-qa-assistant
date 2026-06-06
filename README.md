@@ -1,157 +1,297 @@
----
-title: AI Q&A Assistant
-emoji: 🤖
-colorFrom: gray
-colorTo: gray
-sdk: docker
-app_port: 7860
-pinned: false
-license: mit
-short_description: RAG chatbot — searches the web, answers with sources
----
-
 # AI Q&A Assistant
 
-Ask a question. Get an answer from the web — with sources.
+An intelligent Retrieval-Augmented Generation (RAG) chatbot that searches the web in real time, retrieves relevant information, and generates grounded answers with source citations.
+
+Unlike traditional AI chatbots that rely solely on pre-trained knowledge, this application performs live web retrieval before generating responses, enabling more accurate and up-to-date answers.
+
+<img width="1880" height="896" alt="image" src="https://github.com/user-attachments/assets/1f4ab024-0081-4e7d-8b2b-efcf27ac7b54" />
+
+## Live Demo
+
+**Application:** https://decodephi-home-chat.hf.space/
 
 ---
 
-## The Idea
+# Features
 
-Most AI chatbots answer from training data that goes stale. This one searches the web first, pulls the actual content, and then generates an answer grounded in real, current sources.
-
-No hallucinations. Everything is cited.
-
----
-
-## How It Works
-
-```
-Your question
-    ↓
-Search the web (DuckDuckGo)
-    ↓
-Scrape top results in parallel
-    ↓
-Split into chunks, embed with FAISS
-    ↓
-Retrieve most relevant chunks
-    ↓
-Generate answer via Groq (llama-3.3-70b)
-    ↓
-Answer + Key Points + Sources
-```
-
-This pattern is called **RAG — Retrieval-Augmented Generation**.
+* Real-time web search using DuckDuckGo
+* Parallel article extraction from multiple sources
+* Retrieval-Augmented Generation (RAG) pipeline
+* Semantic search using vector embeddings
+* Context-aware answer generation
+* Source attribution and citations
+* Conversation memory for multi-turn interactions
+* Fast response generation powered by Groq
+* Clean and responsive web interface
 
 ---
 
-## Tech Stack
+# System Architecture
 
-| Layer | Tool |
-|---|---|
-| Search | ddgs (DuckDuckGo) |
-| Scraping | newspaper4k, BeautifulSoup |
-| Embeddings | sentence-transformers (all-MiniLM-L6-v2) |
-| Vector search | FAISS |
-| LLM | Groq API (llama-3.3-70b) |
-| Backend | FastAPI |
-| Frontend | HTML + CSS + Vanilla JS |
-| Memory | In-process deque (last 6 turns) |
-| Deployment | Hugging Face Spaces (Docker) |
-
-
-## Project Structure
-
-```
-rag-web-assistant/
-├── Dockerfile              # HF Spaces Docker config
-├── run.py                  # Local dev server
-├── .env                    # Your GROQ_API_KEY (never committed)
-├── requirements.txt
-├── backend/
-│   ├── api.py              # FastAPI routes
-│   ├── pipeline.py         # RAG orchestrator
-│   └── modules/
-│       ├── search.py       # Web search with fallback
-│       ├── scraper.py      # Content extraction
-│       ├── chunker.py      # Text splitting
-│       ├── vector_store.py # FAISS index
-│       ├── memory.py       # Conversation memory
-│       ├── prompt_builder.py
-│       ├── llm.py          # Groq + local fallback
-│       └── helpers.py
-└── frontend/
-    ├── index.html
-    ├── css/style.css
-    └── js/
-        ├── app.js
-        ├── api.js
-        └── ui.js
+```text
+User Question
+      │
+      ▼
+DuckDuckGo Search
+      │
+      ▼
+Fetch Top Search Results
+      │
+      ▼
+Article Extraction
+(Newspaper4k + BeautifulSoup)
+      │
+      ▼
+Text Chunking
+      │
+      ▼
+Sentence Embeddings
+(all-MiniLM-L6-v2)
+      │
+      ▼
+FAISS Vector Index
+      │
+      ▼
+Similarity Retrieval
+      │
+      ▼
+Context Construction
+      │
+      ▼
+Groq LLM
+(llama-3.3-70b)
+      │
+      ▼
+Generated Answer
++ Key Insights
++ Source Citations
 ```
 
 ---
 
-## Local Setup
+# Why RAG?
 
-**1. Clone**
+Large Language Models are limited by the data available during training and may produce outdated or hallucinated responses.
+
+Retrieval-Augmented Generation (RAG) solves this problem by:
+
+1. Retrieving relevant information from external sources.
+2. Selecting the most useful context.
+3. Providing the retrieved context to the language model.
+4. Generating answers grounded in actual source material.
+
+This approach significantly improves factual accuracy and transparency.
+
+---
+
+# ⚙️ Tech Stack
+
+| Category        | Technology                     |
+| --------------- | ------------------------------ |
+| Search Engine   | DuckDuckGo (ddgs)              |
+| Web Scraping    | newspaper4k, BeautifulSoup     |
+| Embeddings      | sentence-transformers          |
+| Embedding Model | all-MiniLM-L6-v2               |
+| Vector Database | FAISS                          |
+| LLM Provider    | Groq                           |
+| Language Model  | llama-3.3-70b                  |
+| Backend         | FastAPI                        |
+| Frontend        | HTML, CSS, JavaScript          |
+| Memory          | In-memory conversation history |
+| Deployment      | Hugging Face Spaces (Docker)   |
+
+
+
+---
+
+# 🔄 Workflow
+
+### Step 1: User Query
+
+The user submits a question through the web interface.
+
+### Step 2: Web Search
+
+DuckDuckGo retrieves relevant search results.
+
+### Step 3: Content Extraction
+
+Articles are downloaded and parsed using:
+
+* newspaper4k
+* BeautifulSoup
+
+### Step 4: Text Processing
+
+Retrieved content is:
+
+* Cleaned
+* Split into chunks
+* Prepared for embedding generation
+
+### Step 5: Semantic Retrieval
+
+Each chunk is embedded using:
+
+```text
+all-MiniLM-L6-v2
+```
+
+Embeddings are indexed in FAISS for similarity search.
+
+### Step 6: Context Retrieval
+
+The most relevant chunks are selected based on semantic similarity to the user's question.
+
+### Step 7: Answer Generation
+
+The retrieved context is sent to:
+
+```text
+Groq API
+↓
+llama-3.3-70b
+```
+
+to generate a grounded response.
+
+### Step 8: Source Attribution
+
+The final response includes source references used during retrieval.
+
+---
+
+# Local Development
+
+## Clone Repository
+
 ```bash
 git clone https://github.com/decodephi/ai-qa-assistant.git
+
 cd ai-qa-assistant
 ```
 
-**2. Create virtual environment**
+## Create Virtual Environment
+
+### Windows
+
 ```bash
 python -m venv venv
-venv\Scripts\activate        # Windows
-# source venv/bin/activate   # Mac/Linux
+
+venv\Scripts\activate
 ```
 
-**3. Install dependencies**
+## Install Dependencies
+
 ```bash
 pip install -r requirements.txt
 ```
 
-**4. Add your Groq API key**
+## Configure Environment Variables
 
-Create a `.env` file in the root:
+Create a `.env` file:
+
+```env
+GROQ_API_KEY=your_groq_api_key
 ```
-GROQ_API_KEY=your_key_here
-```
 
 
-**5. Run**
+---
+
+# 🐳 Docker Deployment
+
+Build Image
+
 ```bash
-python run.py
+docker build -t ai-qa-assistant
 ```
 
-Open [http://localhost:8000](http://localhost:8000)
+Run Container
+
+```bash
+docker run -p 7860:7860 ai-qa-assistant
+```
 
 ---
 
-## Deploy on Hugging Face Spaces
+# 🤗 Deploy to Hugging Face Spaces
 
-1. Create a new Space → Select **Docker** SDK
-2. Set `GROQ_API_KEY` as a **Space Secret** in Settings → Variables and secrets
-3. Push this repo to the Space
+### 1. Create a New Space
+
+* Open Hugging Face Spaces
+* Select **Docker** SDK
+
+### 2. Configure Secrets
+
+Add:
+
+```text
+GROQ_API_KEY
+```
+
+under:
+
+```text
+Settings
+→ Variables and Secrets
+```
+
+### 3. Push Repository
+
+```bash
+git add.
+git commit -m "Initial deployment."
+git push
+```
+
+The application will be automatically built and deployed.
 
 ---
 
-## API
+# Future Improvements
 
-| Method | Endpoint | Description |
-|---|---|---|
-| POST | `/api/ask` | Send a question, get an answer |
-| POST | `/api/clear` | Clear conversation memory |
-| GET | `/api/history` | View chat history |
-| GET | `/api/status` | Check active LLM backend |
-| GET | `/docs` | Swagger UI |
+* Persistent chat history
+* User authentication
+* Streaming responses
+* Hybrid search (Keyword + Semantic)
+* Multi-source ranking
+* Redis caching
+* PostgreSQL integration
+* Vector database migration (Qdrant/Pinecone)
+* PDF and document ingestion
+* Agentic search workflows
 
 ---
 
-## Notes
+# Learning Outcomes
 
-- The `.env` file is in `.gitignore` and will never be committed.
-- DuckDuckGo has a rate limit. If it hits it, Bing scraping is used as fallback.
-- First run downloads the embedding model (~80 MB). Subsequent runs are fast.
-- On Hugging Face Spaces, the model cache is stored in `/tmp`.
+This project demonstrates practical experience with:
+
+* Retrieval-Augmented Generation (RAG)
+* Information Retrieval
+* Semantic Search
+* Vector Databases
+* LLM Integration
+* Web Scraping
+* FastAPI Development
+* Docker Deployment
+* AI System Design
+
+---
+
+# 👨‍💻 Author
+
+**Pranab Samanta**
+
+* GitHub: https://github.com/decodephi
+* LinkedIn: https://www.linkedin.com/in/pranab-samanta-a606922b0/
+* X (Twitter): https://x.com/decodephi
+
+---
+
+# 📄 License
+
+This project is licensed under the MIT License.
+
+
+
