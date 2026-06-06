@@ -1,6 +1,6 @@
 ---
 title: AI Q&A Assistant
-emoji: ◈
+emoji: 🤖
 colorFrom: gray
 colorTo: gray
 sdk: docker
