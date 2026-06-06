@@ -3,7 +3,7 @@ fastapi==0.115.12
 uvicorn[standard]==0.34.3
 python-multipart==0.0.20
 
-# ── Environment / Config ───────────────────────────────────────────────────────
+# ── Environment / Config 
 python-dotenv==1.1.0
 
 # ── Search ─────────────────────────────────────────────────────────────────────
