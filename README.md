@@ -60,7 +60,6 @@ This pattern is called **RAG — Retrieval-Augmented Generation**.
 | Memory | In-process deque (last 6 turns) |
 | Deployment | Hugging Face Spaces (Docker) |
 
----
 
 ## Project Structure
 
@@ -120,9 +119,6 @@ Create a `.env` file in the root:
 GROQ_API_KEY=your_key_here
 ```
 
-Get a free key at [console.groq.com](https://console.groq.com).
-
-> If no key is provided, it falls back to the local `flan-t5-large` model.
 
 **5. Run**
 ```bash
