@@ -1,3 +1,15 @@
+---
+title: AI Q&A Assistant
+emoji: ◈
+colorFrom: gray
+colorTo: gray
+sdk: docker
+app_port: 7860
+pinned: false
+license: mit
+short_description: RAG chatbot — searches the web, answers with sources
+---
+
 # AI Q&A Assistant
 
 Ask a question. Get an answer from the web — with sources.
@@ -46,6 +58,7 @@ This pattern is called **RAG — Retrieval-Augmented Generation**.
 | Backend | FastAPI |
 | Frontend | HTML + CSS + Vanilla JS |
 | Memory | In-process deque (last 6 turns) |
+| Deployment | Hugging Face Spaces (Docker) |
 
 ---
 
@@ -53,7 +66,8 @@ This pattern is called **RAG — Retrieval-Augmented Generation**.
 
 ```
 rag-web-assistant/
-├── run.py                  # Start the server
+├── Dockerfile              # HF Spaces Docker config
+├── run.py                  # Local dev server
 ├── .env                    # Your GROQ_API_KEY (never committed)
 ├── requirements.txt
 ├── backend/
@@ -79,7 +93,7 @@ rag-web-assistant/
 
 ---
 
-## Setup
+## Local Setup
 
 **1. Clone**
 ```bash
@@ -97,7 +111,6 @@ venv\Scripts\activate        # Windows
 **3. Install dependencies**
 ```bash
 pip install -r requirements.txt
-pip install ddgs
 ```
 
 **4. Add your Groq API key**
@@ -120,6 +133,14 @@ Open [http://localhost:8000](http://localhost:8000)
 
 ---
 
+## Deploy on Hugging Face Spaces
+
+1. Create a new Space → Select **Docker** SDK
+2. Set `GROQ_API_KEY` as a **Space Secret** in Settings → Variables and secrets
+3. Push this repo to the Space
+
+---
+
 ## API
 
 | Method | Endpoint | Description |
@@ -137,3 +158,4 @@ Open [http://localhost:8000](http://localhost:8000)
 - The `.env` file is in `.gitignore` and will never be committed.
 - DuckDuckGo has a rate limit. If it hits it, Bing scraping is used as fallback.
 - First run downloads the embedding model (~80 MB). Subsequent runs are fast.
+- On Hugging Face Spaces, the model cache is stored in `/tmp`.
