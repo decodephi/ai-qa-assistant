@@ -1,3 +1,15 @@
+---
+title: AI Q&A Assistant
+emoji: 🤖
+colorFrom: gray
+colorTo: gray
+sdk: docker
+app_port: 7860
+pinned: false
+license: mit
+short_description: RAG chatbot — searches the web, answers with sources
+---
+
 # AI Q&A Assistant
 
 An intelligent Retrieval-Augmented Generation (RAG) chatbot that searches the web in real time, retrieves relevant information, and generates grounded answers with source citations.
